@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Basic Map</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Leaflet JavaScript code-->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- D3 library -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- Our CSS -->
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+  <!-- Main container -->
+  <div class="main-container">
+    <!-- Subsection 1 -->
+    <div class="subsection subsection-1">
+      <b><u>Map</u></b><br /> <br />
+      Park Geo Data - Borders <br /> 
+      Walking Scores/Visitor Counts by Color Code ? <br /> 
+      Amenities? <br /> 
+      Hover Text - Visitor Counts? <br /> <br />
+      Selecting a City/Park shape(s?) will update the other sections
+      <div id="map" class="subsection"></div>
+    </div>
+    <!-- Subsection 2 and Subsection 3 -->
+    <div class="subsection">
+      <!-- Subsection 2 -->
+      <div class="subsection subsection-2">
+        <b><u>Selected City Statistics</u></b><br /> <br />
+        High/Low Income Disparities <br/>
+        Population %'s by Demographics <br />
+        City Growth / Population <br />
+      </div>
+      <!-- Subsection 3 -->
+      <div class="subsection subsection-3">
+        <b><u>Selected City Park Statistics</u></b> <br /> <br />
+        Park Spending per Capita <br />
+        Walkable Park %'s by Demographic Groups <br/>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript file -->
+  <script type="text/javascript" src="logic.js"></script>
+</body>
+
+</html>
