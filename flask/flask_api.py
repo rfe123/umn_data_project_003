@@ -10,7 +10,7 @@ from flask import Flask, jsonify
 #################################################
 # Database Setup
 #################################################
-engine = create_engine("sqlite://parks_db.sqlite")
+engine = create_engine("sqlite:///parks_db_1.sqlite")
 
 # reflect an existing database into a new model
 Base = automap_base()
@@ -19,7 +19,7 @@ Base.prepare(autoload_with=engine, reflect=True)
 
 # Save reference to the table
 print(Base.classes.keys())
-Passenger = Base.classes.passenger
+Cities = Base.classes.cities
 
 #################################################
 # Flask Setup
@@ -37,7 +37,7 @@ def get_data(column_name):
     session = Session(engine)
 
     # query the desired column
-    results = list(session.query(getattr(Passenger, column_name)))
+    results = list(session.query(getattr(Cities, column_name)))
 
     # close the session
     session.close()
