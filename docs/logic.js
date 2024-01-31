@@ -33,13 +33,13 @@ d3.json('http://127.0.0.1:5000/api/all_data')
     })
     .then(function (localCityData) {
         // Handle the loaded data
-        console.log(localCityData);
+        //console.log(localCityData);
 
         cities.forEach((element) => {
             // Assuming City_Name is the property in each element
             for (let i = 0; i < localCityData.length; i++) {
                 if (element.city === localCityData[i].name & element.state === localCityData[i].state) {
-                    console.log(localCityData[i].name);
+                    //console.log(localCityData[i].name);
                     // Add the matching city data to the cityData array
                     cityData.push({name:localCityData[i].name, coord:localCityData[i].coord});
                 }
