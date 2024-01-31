@@ -81,7 +81,7 @@ def get_data():
         city_list.append(city_dict)
 
     # Return the JSON list
-    response = jsonify([city_list])
+    response = jsonify(city_list)
 
     # https://stackoverflow.com/questions/26980713/solve-cross-origin-resource-sharing-with-flask
     response.headers.add('Access-Control-Allow-Origin', '*')
