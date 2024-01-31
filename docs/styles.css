@@ -35,12 +35,12 @@ h1 {
 
 /* Set the width for Subsection 1 */
 .subsection-1 {
-  flex: 3; /* Subsection 1 takes half of the width */
+  flex: 1; /* Subsection 1 takes half of the width */
   border: 1px solid black;
 }
 
 /* Set the width for Subsection 2 and Subsection 3 */
 .subsection-2, .subsection-3 {
-  flex: 2; /* Subsection 2 and Subsection 3 take the other half */
+  flex: 1; /* Subsection 2 and Subsection 3 take the other half */
   border: 1px solid black;
 }
