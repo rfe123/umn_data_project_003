@@ -15,7 +15,7 @@ header, footer {
 main {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 100px); /* Adjust for header and footer height */
+  min-height: calc(100vh - 100px - 30px); /* Adjust for header and footer height */
 }
 
 .controls {
