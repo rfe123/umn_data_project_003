@@ -16,6 +16,9 @@
   <!-- D3 library -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
 
+  <!-- AnyChart library-->
+  <script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-base.min.js"></script>
+
   <!-- Our CSS -->
   <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
@@ -37,16 +40,22 @@
     <div class="subsection">
       <!-- Subsection 2 -->
       <div class="subsection subsection-2">
-        <b><u>Selected City Statistics</u></b><br /> <br />
+        <!-- <b><u>Selected City Statistics</u></b><br /> <br />
         High/Low Income Disparities <br/>
         Population %'s by Demographics <br />
-        City Growth / Population <br />
+        City Growth / Population <br /><br />
+        Top / Middle / Bottom City grouping ? <br /> <hr /> -->
+        <text id="section2">Section 2</text>
+        <div id="cityChart"></div>
       </div>
       <!-- Subsection 3 -->
       <div class="subsection subsection-3">
         <b><u>Selected City Park Statistics</u></b> <br /> <br />
+        Park Size per Capita <br />
         Park Spending per Capita <br />
-        Walkable Park %'s by Demographic Groups <br/>
+        Walkable Park %'s by Demographic Groups <br /><br />
+        <text id="section3">Section 3</text>
+        <div id="parkChart"></div>
       </div>
     </div>
   </div>
