@@ -67,15 +67,18 @@ main {
   margin-bottom: 10px; /* Adjust margin as needed */
 }
 
-button {
-  margin: 2px;
+.controls button {
   background-color: #333;
+  border: none;
   color: #fff;
-  border-color: #fff;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
 }
 
-button:hover {
+.controls button:hover {
   background-color: #fff;
   color: #333;
-  border-color: #333;
 }
