@@ -124,7 +124,9 @@ function load_city_data(data) {
 d3.json('http://127.0.0.1:5000/api/all_data')
     .then(x => {
         addCityChart(x);
+        console.log(x);
         return load_city_data(x);
+        
     })
     .then(x => {
         addCityMarkers(x);
