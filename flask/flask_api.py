@@ -19,7 +19,7 @@ Base.prepare(autoload_with=engine, reflect=True)
 
 # Save reference to the table
 print(Base.classes.keys())
-Ufo = Base.classes.ufo
+City = Base.classes.cities
 
 #################################################
 # Flask Setup
@@ -37,7 +37,7 @@ def get_data_by_column(column_name):
     session = Session(engine)
 
     # query the desired column
-    results = list(session.query(getattr(Ufo, column_name)))
+    results = list(session.query(getattr(City, column_name)))
 
     # close the session
     session.close()
@@ -56,7 +56,7 @@ def get_data():
     session = Session(engine)
 
     # query the desired column
-    results = list(session.query(Ufo).all())
+    results = list(session.query(City).all())
 
     # close the session
     session.close()
@@ -76,7 +76,7 @@ def get_data():
     location_list = []
     for location in results:
         city_dict = {}
-        for column in Ufo.__table__.columns:
+        for column in City.__table__.columns:
             city_dict[column.name] = getattr(location, column.name)
         location_list.append(city_dict)
 

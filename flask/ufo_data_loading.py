@@ -12,6 +12,6 @@ df = pd.read_csv('ufo.csv')
 
 
 # send it to the database (replace 'passenger' with your table name and 'id' with your primary key column)
-df.to_sql('ufo', conn, index=False, if_exists='replace', dtype={'ID': 'INTEGER PRIMARY KEY'})
+df.to_sql('ufo', conn, index=False, if_exists='replace', dtype={'id': 'INTEGER PRIMARY KEY'})
 conn.close()
 

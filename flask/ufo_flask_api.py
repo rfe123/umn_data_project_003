@@ -14,6 +14,7 @@ Base = automap_base()
 Base.prepare(autoload_with=engine)
 
 # Save reference to the table
+print(Base.classes.keys())
 Ufo = Base.classes.ufo  # Ensure "ufo" matches the actual table name in your database
 
 #################################################
@@ -46,4 +47,4 @@ def get_data(column_name):
 
 # run the app!
 if __name__ == '__main__':
-    app.run()
+   app.run(debug=True)
