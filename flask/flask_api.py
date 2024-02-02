@@ -19,7 +19,7 @@ Base.prepare(autoload_with=engine, reflect=True)
 
 # Save reference to the table
 print(Base.classes.keys())
-Cities = Base.classes.cities
+Ufo = Base.classes.ufo
 
 #################################################
 # Flask Setup
@@ -37,7 +37,7 @@ def get_data_by_column(column_name):
     session = Session(engine)
 
     # query the desired column
-    results = list(session.query(getattr(Cities, column_name)))
+    results = list(session.query(getattr(Ufo, column_name)))
 
     # close the session
     session.close()
@@ -56,7 +56,7 @@ def get_data():
     session = Session(engine)
 
     # query the desired column
-    results = list(session.query(Cities).all())
+    results = list(session.query(Ufo).all())
 
     # close the session
     session.close()
@@ -73,15 +73,15 @@ def get_data():
     #     response.append(city_dict)
 
         # Serialize the users into a list of dictionaries
-    city_list = []
-    for city in results:
+    location_list = []
+    for location in results:
         city_dict = {}
-        for column in Cities.__table__.columns:
-            city_dict[column.name] = getattr(city, column.name)
-        city_list.append(city_dict)
+        for column in Ufo.__table__.columns:
+            city_dict[column.name] = getattr(location, column.name)
+        location_list.append(city_dict)
 
     # Return the JSON list
-    response = jsonify([city_list])
+    response = jsonify([location_list])
 
     # https://stackoverflow.com/questions/26980713/solve-cross-origin-resource-sharing-with-flask
     response.headers.add('Access-Control-Allow-Origin', '*')
