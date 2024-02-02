@@ -16,11 +16,31 @@ function update_city_stats(city) {
     //Load the city data into section 2 visualization
     //console.log(city.data);
     let text_element = d3.select('#section2');
-
     let city_data = city.data;
 
     text_element.text(city_data.City_Name + ', ' + city_data.State_code);
+
+    let cityDataDiv = d3.select("#cityChart");
+    cityDataDiv.selectAll('*').remove();
+
+    cityDataDiv.selectAll('p')
+        .data(Object.entries(city_data))
+        .enter()
+        .append('p')
+        .text(d => `${d[0]}: ${d[1]}`);
+
 };
+
+function get_value_color(value) {
+    switch(true) {
+        case (value <0.50):
+            return 'red';
+        case (value >= 0.50 && value < 0.70):
+            return 'orange';
+        case (value >= 0.70):
+            return 'green';
+    }
+}
 
 function update_park_stats(city) {
     //Load the city data into section 2 visualization
@@ -28,7 +48,43 @@ function update_park_stats(city) {
 
     let city_data = city.data;
 
-    text_element.text(city_data.City_Name + ' People per Acre: ' + city_data.Density_People_Per_Acre);
+    text_element.text(city_data.City_Name + ' Walkable Park Access');
+
+    let parkDataDiv = d3.select("#parkChart");
+    parkDataDiv.selectAll('*').remove();
+
+    let data = [
+        ["All", city_data.Walkable_access_All * 100],
+        ["Black", city_data.Walkable_Access_Black * 100],
+        ["Hispanic", city_data.Hispanic * 100],
+        ["Asian", city_data.Asian * 100],
+        ["Other Races", city_data.Other_race * 100]
+    ];
+
+    let colors = [
+        get_value_color(city_data.Walkable_access_All),
+        get_value_color(city_data.Walkable_Access_Black),
+        get_value_color(city_data.Hispanic),
+        get_value_color(city_data.Asian),
+        get_value_color(city_data.Other_race)
+    ];
+
+    // create a chart
+    let chart = anychart.column();
+
+    chart.palette(colors);
+
+    chart.yScale().minimum(0);
+    chart.yScale().maximum(100);
+
+    // create a column series and set the data
+    var series = chart.column(data);
+    series.name("Walkable Park Access");
+
+    // set the container id
+    chart.container("parkChart");
+    // initiate drawing the chart
+    chart.draw();
 };
 
 function addCityMarkers(localCityData) {
@@ -61,12 +117,12 @@ function addCityMarkers(localCityData) {
     });
 }
 
-function top_cities(city_data, key, top=10) {
-    let sorted_cities = city_data.sort((a,b) => b[key] - a[key]);
+function top_cities(city_data, key, top = 10) {
+    let sorted_cities = city_data.sort((a, b) => b[key] - a[key]);
     return sorted_cities.slice(0, top);
 };
 
-function addCityChart(city_data) {
+function addParkChart(city_data) {
     //console.log(city_data);
 
     let walkable_cities = top_cities(city_data, 'Walkable_access_All');
@@ -93,13 +149,24 @@ function addCityChart(city_data) {
     series2.name("Low Income Walkability");
 
     // set the container id
-    chart.container("cityChart");
+    chart.container("parkChart");
 
     // initiate drawing the chart
     chart.draw();
 };
 
-function addParksChart(data) {
+function addCityChart(city_data) {
+    let topPopulation = top_cities(city_data, 'Population', 25);
+    let parkDataDiv = d3.select("#cityChart");
+    parkDataDiv.selectAll('*').remove();
+
+    console.log(topPopulation);
+
+    parkDataDiv.selectAll('p')
+        .data(topPopulation)
+        .enter()
+        .append('p')
+        .text(d => `${d.City_Name}: ${d.Population}`);
 
 };
 
@@ -119,13 +186,15 @@ function load_city_data(data) {
     return d3.json('city.list.json');
 }
 
+
+
 // Load data from the Flask API
 d3.json('http://127.0.0.1:8080/api/all_data')
     .then(x => {
         addCityChart(x);
+        addParkChart(x);
         return load_city_data(x);
     })
     .then(x => {
         addCityMarkers(x);
     });
-

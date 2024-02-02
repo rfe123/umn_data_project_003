@@ -3,7 +3,7 @@ import pandas as pd
 import sqlite3
 
 # connect to db
-conn = sqlite3.connect('parks_db_2.sqlite')
+conn = sqlite3.connect('parks_db_3.sqlite')
 
 
 # read the csv data into a dataframe

@@ -10,7 +10,7 @@ from flask import Flask, jsonify
 #################################################
 # Database Setup
 #################################################
-engine = create_engine("sqlite:///parks_db_2.sqlite")
+engine = create_engine("sqlite:///parks_db_3.sqlite")
 
 # reflect an existing database into a new model
 Base = automap_base()
@@ -92,4 +92,3 @@ def get_data():
 # run the app!
 if __name__ == '__main__':
     app.run(port=8080)
-
