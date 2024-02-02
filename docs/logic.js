@@ -32,14 +32,18 @@ function update_city_stats(city) {
 };
 
 function get_value_color(value) {
-    switch(true) {
-        case (value <0.50):
+    switch (true) {
+        case (value < 0.50):
             return 'red';
         case (value >= 0.50 && value < 0.70):
             return 'orange';
         case (value >= 0.70):
             return 'green';
     }
+}
+
+function park_plot_data(city) {
+
 }
 
 function update_park_stats(city) {
@@ -54,32 +58,91 @@ function update_park_stats(city) {
     parkDataDiv.selectAll('*').remove();
 
     let data = [
-        ["All", city_data.Walkable_access_All * 100],
-        ["Black", city_data.Walkable_Access_Black * 100],
-        ["Hispanic", city_data.Hispanic * 100],
-        ["Asian", city_data.Asian * 100],
-        ["Other Races", city_data.Other_race * 100]
-    ];
-
-    let colors = [
-        get_value_color(city_data.Walkable_access_All),
-        get_value_color(city_data.Walkable_Access_Black),
-        get_value_color(city_data.Hispanic),
-        get_value_color(city_data.Asian),
-        get_value_color(city_data.Other_race)
+        {
+            x: "All", value: city_data.Walkable_access_All * 100,
+            normal: {
+                fill: get_value_color(city_data.Walkable_access_All),
+                stroke: null,
+                label: { enabled: true }
+            }
+        },
+        {
+            x: "Black", value: city_data.Walkable_Access_Black * 100,
+            normal: {
+                fill: get_value_color(city_data.Walkable_Access_Black),
+                stroke: null,
+                label: { enabled: true }
+            }
+        },
+        {
+            x: "Hispanic", value: city_data.Hispanic * 100,
+            normal: {
+                fill: get_value_color(city_data.Hispanic),
+                stroke: null,
+                label: { enabled: true }
+            }
+        },
+        {
+            x: "Asian", value: city_data.Asian * 100,
+            normal: {
+                fill: get_value_color(city_data.Asian),
+                stroke: null,
+                label: { enabled: true }
+            }
+        },
+        {
+            x: "Other Races", value: city_data.Other_race * 100,
+            normal: {
+                fill: get_value_color(city_data.Other_race),
+                stroke: null,
+                label: { enabled: true }
+            }
+        },
+        {
+            x: "Multiple Races", value: city_data.Multiple_races * 100,
+            normal: {
+                fill: get_value_color(city_data.Multiple_races),
+                stroke: null,
+                label: { enabled: true }
+            }
+        },
+        {
+            x: "Pacific Islander", value: city_data.Pacific_Islander * 100,
+            normal: {
+                fill: get_value_color(city_data.Pacific_Islander),
+                stroke: null,
+                label: { enabled: true }
+            }
+        },
+        {
+            x: "All People of Color", value: city_data.All_People_of_color * 100,
+            normal: {
+                fill: get_value_color(city_data.All_People_of_color),
+                stroke: null,
+                label: { enabled: true }
+            }
+        },
+        {
+            x: "White", value: city_data.White * 100,
+            normal: {
+                fill: get_value_color(city_data.White),
+                stroke: null,
+                label: { enabled: true }
+            }
+        }
     ];
 
     // create a chart
     let chart = anychart.column();
 
-    chart.palette(colors);
-
     chart.yScale().minimum(0);
     chart.yScale().maximum(100);
+    chart.xAxis().labels().rotation(90);
 
     // create a column series and set the data
-    var series = chart.column(data);
+    var series = chart.column(data.sort((a,b) => a.x.localeCompare(b.x)));
     series.name("Walkable Park Access");
+
 
     // set the container id
     chart.container("parkChart");
@@ -184,9 +247,7 @@ function load_city_data(data) {
 
     // Return the promise to continue the chain
     return d3.json('city.list.json');
-}
-
-
+};
 
 // Load data from the Flask API
 d3.json('http://127.0.0.1:8080/api/all_data')
