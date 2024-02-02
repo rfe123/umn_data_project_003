@@ -70,28 +70,27 @@ function addCityChart(city_data) {
     //console.log(city_data);
 
     let walkable_cities = top_cities(city_data, 'Walkable_access_All');
+    console.log(walkable_cities);
 
     let data1 = [];
     walkable_cities.forEach(x => {
-        data1.push([x.City_Name + ', ' + x.State_code, x.Population]);
+        data1.push([x.City_Name + ', ' + x.State_code, (x.Walkable_access_All * 100)]);
     });
-
-    //console.log(data);
 
     // create a chart
     chart = anychart.bar();
 
     // create a bar series and set the data
     var series1 = chart.bar(data1);
-    series1.name("Population");
+    series1.name("Walkability");
 
-    // let data2 = [];
-    // walkable_cities.forEach(x => {
-    //     data2.push([x.City_Name + ', ' + x.State_code, x.Walkable_access_All]);
-    // });
+    let data2 = [];
+    walkable_cities.forEach(x => {
+        data2.push([x.City_Name + ', ' + x.State_code, (x.Walkability_Low_Income * 100)]);
+    });
 
-    // var series2 = chart.bar(data2);
-    // series2.name("Walkable Park Access");
+    var series2 = chart.bar(data2);
+    series2.name("Low Income Walkability");
 
     // set the container id
     chart.container("cityChart");
@@ -124,9 +123,7 @@ function load_city_data(data) {
 d3.json('http://127.0.0.1:8080/api/all_data')
     .then(x => {
         addCityChart(x);
-        console.log(x);
         return load_city_data(x);
-        
     })
     .then(x => {
         addCityMarkers(x);
