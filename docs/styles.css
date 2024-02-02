@@ -63,7 +63,7 @@ main {
 /* Chart fills available space in each pane */
 .chart {
   flex: 1;
-  background-color: lightgreen; /* Adjust background color for the chart */
+  background-color: #fff; /* Adjust background color for the chart */
   margin-bottom: 10px; /* Adjust margin as needed */
 }
 
