@@ -87,9 +87,60 @@ function update_park_stats(city) {
     chart.draw();
 };
 
+function drawCityBoundary(currentCityName, currentStateName) {
+
+    //const cityName = currentCityName;
+    
+    console.log('currentCity ' + currentCityName);
+    console.log('currentState ' + currentStateName);
+
+    for (i=0; i <= cityPolygonList.features.length; i++) {
+        if (cityPolygonList.features[i].properties.NAME === currentCityName && 
+            cityPolygonList.features[i].properties.ST === currentStateName) {
+
+            console.log(cityPolygonList.features[i].geometry.coordinates);
+            console.log('length '  + cityPolygonList.features[i].geometry.coordinates.length);
+
+            console.log(cityPolygonList.features[i].properties);
+
+            let coordinatesList = cityPolygonList.features[i].geometry.coordinates;
+            //console.log('boundariesList ' + cityPolygonList.features[i].geometry);
+
+                console.log(coordinatesList[0]);
+                // Create a Polygon, and pass in some initial options.
+                L.polyline(coordinatesList[0]
+                //     [45.54, -122.68],
+                //     [45.55, -122.68],
+                //     [45.55, -122.66]
+                , {
+                    color: "darkgreen",
+                   // fillColor: "green",
+                   // fillOpacity: 0.5
+                }).addTo(myMap);
+            // for (j=0; j <= coordinatesList.length; j ++) {
+            //     console.log(coordinatesList[j]);
+            //     // Create a Polygon, and pass in some initial options.
+            //     L.polygon(coordinatesList[j]
+            //     //     [45.54, -122.68],
+            //     //     [45.55, -122.68],
+            //     //     [45.55, -122.66]
+            //     , {
+            //         color: "darkgreen",
+            //         fillColor: "green",
+            //         fillOpacity: 0.5
+            //     }).addTo(myMap);
+            // }
+            
+        }
+
+    }
+    
+}
+
+
 function addCityMarkers(localCityData) {
     // Handle the loaded data
-    //console.log(localCityData);
+    console.log(localCityData);
 
     cities.forEach((element) => {
         // Assuming City_Name is the property in each element
@@ -121,7 +172,9 @@ function addCityMarkers(localCityData) {
             click: function click_city_marker(event) {
                 update_city_stats(city);
                 update_park_stats(city);
-                myMap.setView(marker.getLatLng(), 11); 
+                //zoom to city level upon click
+                myMap.setView(marker.getLatLng(), 12); 
+                drawCityBoundary(city.name, city.state);
             }
          });
         marker.bindPopup(city.name + ', ' + city.state);
@@ -197,13 +250,47 @@ function load_city_data(data) {
     return d3.json('city.list.json');
 }
 
+let cityPolygonList = [];
+function loadCityPolygons() {
+    d3.json('cityPolygons.geojson')
+      .then(function(data) {
+        cityPolygonList = data;
+        console.log('GeoJSON Data:', cityPolygonList);
+        })
+}
 
+// function loadParkPolygons() {
+//     d3.json('parkPolygons.geojson')
+//       .then(function(data) {
+//         let parkPolygons = data;
+//         // Log the GeoJSON data to the console
+//             console.log('GeoJSON Data:', parkPolygons);
+//       })
+// }
+
+// Add a reset button event listener
+document.getElementById('resetButton').addEventListener('click', function() {
+    // Reset the map view to the initial position and zoom
+    myMap.setView( [37.09, -95.71], 5);
+
+    let cityChart = d3.select("#cityChart");
+    cityChart.selectAll('*').remove();
+
+    let parkChart = d3.select("#parkChart");
+    parkChart.selectAll('*').remove();
+
+    console.log(cityData);
+    // addCityChart(cityData);
+    // addParkChart(cityData);
+  });
 
 // Load data from the Flask API
 d3.json('http://127.0.0.1:8080/api/all_data')
     .then(x => {
         addCityChart(x);
         addParkChart(x);
+        loadCityPolygons();
+        //loadParkPolygons();
         return load_city_data(x);
     })
     .then(x => {
