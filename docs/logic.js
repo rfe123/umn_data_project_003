@@ -19,6 +19,7 @@ function update_city_stats(city) {
     //console.log(city.data);
     let text_element = d3.select('#section2');
     let city_data = city.data;
+    
 
     text_element.text(city_data.City_Name + ', ' + city_data.State_code);
 
@@ -170,6 +171,57 @@ function update_park_stats(city) {
     chart.draw();
 };
 
+function drawCityBoundary(currentCityName, currentStateName) {
+
+    //const cityName = currentCityName;
+    
+    console.log('currentCity ' + currentCityName);
+    console.log('currentState ' + currentStateName);
+
+    for (i=0; i <= cityPolygonList.features.length; i++) {
+        if (cityPolygonList.features[i].properties.NAME === currentCityName && 
+            cityPolygonList.features[i].properties.ST === currentStateName) {
+
+            console.log(cityPolygonList.features[i].geometry.coordinates);
+            console.log('length '  + cityPolygonList.features[i].geometry.coordinates.length);
+
+            console.log(cityPolygonList.features[i].properties);
+
+            let coordinatesList = cityPolygonList.features[i].geometry.coordinates;
+            //console.log('boundariesList ' + cityPolygonList.features[i].geometry);
+
+                console.log(coordinatesList[0]);
+                // Create a Polygon, and pass in some initial options.
+                L.polyline(coordinatesList[0]
+                //     [45.54, -122.68],
+                //     [45.55, -122.68],
+                //     [45.55, -122.66]
+                , {
+                    color: "darkgreen",
+                   // fillColor: "green",
+                   // fillOpacity: 0.5
+                }).addTo(myMap);
+            // for (j=0; j <= coordinatesList.length; j ++) {
+            //     console.log(coordinatesList[j]);
+            //     // Create a Polygon, and pass in some initial options.
+            //     L.polygon(coordinatesList[j]
+            //     //     [45.54, -122.68],
+            //     //     [45.55, -122.68],
+            //     //     [45.55, -122.66]
+            //     , {
+            //         color: "darkgreen",
+            //         fillColor: "green",
+            //         fillOpacity: 0.5
+            //     }).addTo(myMap);
+            // }
+            
+        }
+
+    }
+    
+}
+
+
 function addLegend(){
     let legend = L.control({ position: 'bottomright' })
     legend.onAdd = function () {
@@ -191,7 +243,6 @@ function addLegend(){
    };
    legend.addTo(myMap);
 }
-
 function addCityMarkers(localCityData) {
     // Handle the loaded data
     //console.log(localCityData);
@@ -200,10 +251,10 @@ function addCityMarkers(localCityData) {
     cities.forEach((element) => {
         // Assuming City_Name is the property in each element
         for (let i = 0; i < localCityData.length; i++) {
-            if (element.city === localCityData[i].name & element.state === localCityData[i].state) {
+            if (element.City_Name === localCityData[i].name & element.State_code === localCityData[i].state) {
                 //console.log(localCityData[i].name);
                 // Add the matching city data to the cityData array
-                cityData.push({ name: localCityData[i].name, state: element.state, coord: localCityData[i].coord, data: element.data });
+                cityData.push({ name: localCityData[i].name, state: element.State_code, coord: localCityData[i].coord, data:element});
             }
         }
     });
@@ -231,9 +282,16 @@ function addCityMarkers(localCityData) {
         let calculatedColor = colors[colorIndex];
         return calculatedColor;
         }
-
     cityData.forEach(city => {
-        const marker = L.circleMarker([city.coord.lat, city.coord.lon], {radius: getMarkerRadius(city.data.Population),
+        //define the tree icon
+        // const customIcon = L.icon({
+        //     iconUrl: 'tree1.png',
+        //     iconSize: [32, 32], // Set the size of your icon
+        //     iconAnchor: [16, 16], // Set the anchor point
+        //     popupAnchor: [0, -16] // Set the popup anchor point
+        //   });
+        
+          const marker = L.circleMarker([city.coord.lat, city.coord.lon], {radius: getMarkerRadius(city.data.Population),
             fillColor: getMarkerColor(city.data.Acres_per_thousand_people),
             color: "black",
             weight: 1,
@@ -244,6 +302,9 @@ function addCityMarkers(localCityData) {
             click: function click_city_marker(event) {
                 update_city_stats(city);
                 update_park_stats(city);
+                //zoom to city level upon click
+                myMap.setView(marker.getLatLng(), 12); 
+                drawCityBoundary(city.name, city.state);
             }
         });
         //marker.bindPopup(city.name + ', ' + city.state);
@@ -258,6 +319,9 @@ function top_cities(city_data, key, top = 10) {
 
 function addParkChart(city_data) {
     //console.log(city_data);
+    let text_element = d3.select('#section3');
+
+    text_element.text('Overall Walkability');
 
     let walkable_cities = top_cities(city_data, 'Walkable_access_All');
     console.log(walkable_cities);
@@ -290,7 +354,9 @@ function addParkChart(city_data) {
 };
 
 function addCityChart(city_data) {
-    let topPopulation = top_cities(city_data, 'Population', 100);
+    let text_element = d3.select('#section2');
+    text_element.text('Overall City Populations');
+    let topPopulation = top_cities(city_data, 'Population', 25);
     let container = d3.select("#cityChart");
     container.selectAll('*').remove();
 
@@ -331,22 +397,63 @@ function load_city_data(data) {
         const state = element.State_code;
 
         // Add city and state to the cities array
-        cities.push({ city: city, state: state, data: element });
+        cities.push(element);
     });
 
     //console.log(cities);
 
     // Return the promise to continue the chain
     return d3.json('city.list.json');
-};
+}
+
+let cityPolygonList = [];
+function loadCityPolygons() {
+    d3.json('cityPolygons.geojson')
+      .then(function(data) {
+        cityPolygonList = data;
+        console.log('GeoJSON Data:', cityPolygonList);
+        })
+}
+
+// function loadParkPolygons() {
+//     d3.json('parkPolygons.geojson')
+//       .then(function(data) {
+//         let parkPolygons = data;
+//         // Log the GeoJSON data to the console
+//             console.log('GeoJSON Data:', parkPolygons);
+//       })
+// }
+
+// Add a reset button event listener
+document.getElementById('resetButton').addEventListener('click', function() {
+    // Reset the map view to the initial position and zoom
+    myMap.setView( [37.09, -95.71], 5);
+
+    let cityChart = d3.select("#cityChart");
+    cityChart.selectAll('*').remove();
+
+    let parkChart = d3.select("#parkChart");
+    parkChart.selectAll('*').remove();
+
+    console.log(cities);
+    addCityChart(cities);
+    addParkChart(cities);
+  });
 
 // Load data from the Flask API
 d3.json('http://127.0.0.1:8080/api/alldata')
     .then(x => {
-        addCityChart(x);
-        addParkChart(x);
-        return load_city_data(x);
+        load_city_data(x);
+        // Return the promise to continue the chain
+        return d3.json('city.list.json');
+
+        
+        //loadParkPolygons();
     })
     .then(x => {
         addCityMarkers(x);
+    }).then(x => {
+        addCityChart(cities);
+        addParkChart(cities);
+        loadCityPolygons();
     });
