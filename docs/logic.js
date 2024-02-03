@@ -219,7 +219,7 @@ function addParkChart(city_data) {
 };
 
 function addCityChart(city_data) {
-    let topPopulation = top_cities(city_data, 'Population', 25);
+    let topPopulation = top_cities(city_data, 'Population', 100);
     let parkDataDiv = d3.select("#cityChart");
     parkDataDiv.selectAll('*').remove();
 
