@@ -8,6 +8,9 @@ console.log(bounds);
 // Add a tile layer.
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+//aliens
+// L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+//	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
 }).addTo(myMap);
 
 function updateBounds() {
@@ -160,7 +163,7 @@ function update_park_stats(city) {
 
 function addCityMarkers(localCityData) {
     // Handle the loaded data
-    //console.log(localCityData);
+    //console.log(`local city data: ${localCityData}`);
 
     cities.forEach((element) => {
         // Assuming City_Name is the property in each element
@@ -263,13 +266,15 @@ function load_city_data(data) {
 d3.json('http://127.0.0.1:8080/api/all_data/')
     .then(x => {
         //console.log(x.cities);
-        //console.log(x.ufo);
+        console.log(x.ufo);
         addCityChart(x.cities);
         addParkChart(x.cities);
+        //console.log(`ufo data ${x.ufo}`);
         return load_city_data(x.cities);
     })
     .then(x => {
         addCityMarkers(x);
+
     });
 
 
