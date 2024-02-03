@@ -312,7 +312,7 @@ function addCityMarkers(localCityData) {
                 update_park_stats(city);
                 //zoom to city level upon click
                 myMap.setView(marker.getLatLng(), 12); 
-                drawCityBoundary(city.name, city.state);
+                //drawCityBoundary(city.name, city.state);
             }
         });
         //marker.bindPopup(city.name + ', ' + city.state);
@@ -451,13 +451,11 @@ document.getElementById('resetButton').addEventListener('click', function() {
   });
 
 // Load data from the Flask API
-d3.json('http://127.0.0.1:8080/api/alldata/')
+d3.json('http://127.0.0.1:8080/api/all_data/')
     .then(x => {
         load_city_data(x.cities);
         // Return the promise to continue the chain
         return d3.json('city.list.json');
-
-        
         //loadParkPolygons();
     })
     .then(x => {
