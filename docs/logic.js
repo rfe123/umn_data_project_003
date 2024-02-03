@@ -246,16 +246,19 @@ function load_city_data(data) {
     //console.log(cities);
 
     // Return the promise to continue the chain
-    return d3.json('city.list.json');
+    
 };
 
 // Load data from the Flask API
 d3.json('http://127.0.0.1:8080/api/all_data')
     .then(x => {
-        addCityChart(x);
-        addParkChart(x);
-        return load_city_data(x);
+        load_city_data(x);
+        return d3.json('city.list.json');
     })
     .then(x => {
         addCityMarkers(x);
+    })
+    .then(x => {
+        addCityChart(cities);
+        addParkChart(cities);   
     });
