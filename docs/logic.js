@@ -291,8 +291,8 @@ function addParkChart(city_data) {
 
 function addCityChart(city_data) {
     let topPopulation = top_cities(city_data, 'Population', 100);
-    let parkDataDiv = d3.select("#cityChart");
-    parkDataDiv.selectAll('*').remove();
+    let container = d3.select("#cityChart");
+    container.selectAll('*').remove();
 
     // Create the table
     var table = container.append("table");
