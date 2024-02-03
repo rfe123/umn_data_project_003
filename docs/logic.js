@@ -303,7 +303,7 @@ function load_city_data(data) {
 };
 
 // Load data from the Flask API
-d3.json('http://127.0.0.1:8080/api/all_data')
+d3.json('http://127.0.0.1:8080/api/alldata')
     .then(x => {
         addCityChart(x);
         addParkChart(x);
