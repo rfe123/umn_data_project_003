@@ -333,7 +333,7 @@ function addParkChart(city_data) {
 
     text_element.text('Overall Walkability');
 
-    let walkable_cities = top_cities(city_data, 'Walkable_access_All');
+    let walkable_cities = top_cities(city_data, 'Walkable_access_All', 100);
     console.log(walkable_cities);
 
     let data1 = [];
@@ -366,7 +366,7 @@ function addParkChart(city_data) {
 function addCityChart(city_data) {
     let text_element = d3.select('#section2');
     text_element.text('Overall City Populations');
-    let topPopulation = top_cities(city_data, 'Population', 25);
+    let topPopulation = top_cities(city_data, 'Population', 100);
     let container = d3.select("#cityChart");
     container.selectAll('*').remove();
 
