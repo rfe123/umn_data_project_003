@@ -69,6 +69,7 @@ main {
   flex: 1; /* Adjust width as needed */
   display: flex;
   flex-direction: column;
+  background-color: #fff; 
 }
 
 .pane {
@@ -76,14 +77,20 @@ main {
   margin-bottom: 2px;
   display: flex;
   flex-direction: column;
-  overflow-y: auto; 
+  overflow-y: scroll; 
 }
 
 /* Chart fills available space in each pane */
-.chart {
-  flex: 1;
-  background-color: #fff; /* Adjust background color for the chart */
+.chart1 {
+  flex: none;
   margin-bottom: 10px; /* Adjust margin as needed */
+  height: 360px;
+}
+
+.chart2 {
+  flex: none;
+  margin-bottom: 10px; /* Adjust margin as needed */
+  height: 345px;
 }
 
 .controls button {

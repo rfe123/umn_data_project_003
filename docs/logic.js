@@ -11,6 +11,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let cities = [];
 let cityData = [];
+let colors = ['#7CCD7C', '#B3EE3A', '#FFFF00', '#FFD700', '#FFA500', '#FF6347'];
+let grades = [1, 10, 20, 30, 40, 50];
 
 function update_city_stats(city) {
     //Load the city data into section 2 visualization
@@ -168,9 +170,32 @@ function update_park_stats(city) {
     chart.draw();
 };
 
+function addLegend(){
+    let legend = L.control({ position: 'bottomright' })
+    legend.onAdd = function () {
+     let container = L.DomUtil.create('div', 'info legend');
+     let p = L.DomUtil.create('p', 'legend-title');
+     p.textContent = 'Park area per thousand people, acres';
+     container.appendChild(p);
+     let div = L.DomUtil.create('div', 'info legend');
+     container.style.backgroundColor = 'white';
+     div.style.width = '120px'; 
+     div.style.height = '150px';  
+        for (let i = 0; i < colors.length; i++) {
+          div.innerHTML +=
+            '<div><span style="background:' + colors[i] + '; width: 20px; height: 20px; display: inline-block;"></span> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+        }
+    container.appendChild(div);
+     return container;
+   };
+   legend.addTo(myMap);
+}
+
 function addCityMarkers(localCityData) {
     // Handle the loaded data
     //console.log(localCityData);
+    addLegend();
 
     cities.forEach((element) => {
         // Assuming City_Name is the property in each element
@@ -185,8 +210,35 @@ function addCityMarkers(localCityData) {
 
     //console.log(cityData);
 
+    function scaleValue(value, originalMin, originalMax, targetMin, targetMax) {
+        return (value - originalMin) / (originalMax - originalMin) * (targetMax - targetMin) + targetMin;
+    }
+
+    function getMarkerRadius(population) {
+        const originalMin = 200000;
+        const originalMax = 8850000;
+        const targetMin = 5; 
+        const targetMax = 50; 
+
+        return scaleValue(population, originalMin, originalMax, targetMin, targetMax);
+      }
+
+      function getMarkerColor(acres) {
+        let normalizedAcres = (acres - grades[0]) / (grades[grades.length - 1] - grades[0]);
+        normalizedAcres = Math.max(0, Math.min(normalizedAcres, 1));
+        let colorIndex = Math.floor(normalizedAcres * (colors.length - 1));
+        colorIndex = Math.max(0, Math.min(colorIndex, colors.length - 1));
+        let calculatedColor = colors[colorIndex];
+        return calculatedColor;
+        }
+
     cityData.forEach(city => {
-        const marker = L.marker([city.coord.lat, city.coord.lon]).addTo(myMap);
+        const marker = L.circleMarker([city.coord.lat, city.coord.lon], {radius: getMarkerRadius(city.data.Population),
+            fillColor: getMarkerColor(city.data.Acres_per_thousand_people),
+            color: "black",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8}).addTo(myMap);
         marker.on({
             //Mouse Click
             click: function click_city_marker(event) {
@@ -194,7 +246,8 @@ function addCityMarkers(localCityData) {
                 update_park_stats(city);
             }
         });
-        marker.bindPopup(city.name + ', ' + city.state);
+        //marker.bindPopup(city.name + ', ' + city.state);
+        marker.bindTooltip(city.name + ', ' + city.state, { permanent: false, opacity: 1, autoClose: false });
     });
 }
 
@@ -237,11 +290,10 @@ function addParkChart(city_data) {
 };
 
 function addCityChart(city_data) {
-    let topPopulation = top_cities(city_data, 'Population', 25);
-    let container = d3.select("#cityChart");
-    container.selectAll('*').remove();
+    let topPopulation = top_cities(city_data, 'Population', 100);
+    let parkDataDiv = d3.select("#cityChart");
+    parkDataDiv.selectAll('*').remove();
 
-    //console.log(topPopulation);
     // Create the table
     var table = container.append("table");
 
