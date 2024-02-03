@@ -105,14 +105,25 @@ function addCityMarkers(localCityData) {
     //console.log(cityData);
 
     cityData.forEach(city => {
-        const marker = L.marker([city.coord.lat, city.coord.lon]).addTo(myMap);
+        //define the tree icon
+        const customIcon = L.icon({
+            iconUrl: 'tree1.png',
+            iconSize: [32, 32], // Set the size of your icon
+            iconAnchor: [16, 16], // Set the anchor point
+            popupAnchor: [0, -16] // Set the popup anchor point
+          });
+        
+          // Add a marker with the tree icon
+        const marker = L.marker([city.coord.lat, city.coord.lon], { icon: customIcon }).addTo(myMap);
+        //const marker = L.marker([city.coord.lat, city.coord.lon]).addTo(myMap);
         marker.on({
             //Mouse Click
             click: function click_city_marker(event) {
                 update_city_stats(city);
                 update_park_stats(city);
+                myMap.setView(marker.getLatLng(), 11); 
             }
-        });
+         });
         marker.bindPopup(city.name + ', ' + city.state);
     });
 }
