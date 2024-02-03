@@ -17,6 +17,7 @@ function update_city_stats(city) {
     //console.log(city.data);
     let text_element = d3.select('#section2');
     let city_data = city.data;
+    
 
     text_element.text(city_data.City_Name + ', ' + city_data.State_code);
 
@@ -145,15 +146,15 @@ function addCityMarkers(localCityData) {
     cities.forEach((element) => {
         // Assuming City_Name is the property in each element
         for (let i = 0; i < localCityData.length; i++) {
-            if (element.city === localCityData[i].name & element.state === localCityData[i].state) {
+            if (element.City_Name === localCityData[i].name & element.State_code === localCityData[i].state) {
                 //console.log(localCityData[i].name);
                 // Add the matching city data to the cityData array
-                cityData.push({ name: localCityData[i].name, state: element.state, coord: localCityData[i].coord, data: element.data });
+                cityData.push({ name: localCityData[i].name, state: element.State_code, coord: localCityData[i].coord, data:element});
             }
         }
     });
 
-    //console.log(cityData);
+    console.log(cityData);
 
     cityData.forEach(city => {
         //define the tree icon
@@ -188,6 +189,9 @@ function top_cities(city_data, key, top = 10) {
 
 function addParkChart(city_data) {
     //console.log(city_data);
+    let text_element = d3.select('#section3');
+
+    text_element.text('Overall Walkability');
 
     let walkable_cities = top_cities(city_data, 'Walkable_access_All');
     console.log(walkable_cities);
@@ -220,6 +224,10 @@ function addParkChart(city_data) {
 };
 
 function addCityChart(city_data) {
+    let text_element = d3.select('#section2');
+
+    text_element.text('Overall City Populations');
+
     let topPopulation = top_cities(city_data, 'Population', 25);
     let parkDataDiv = d3.select("#cityChart");
     parkDataDiv.selectAll('*').remove();
@@ -241,7 +249,7 @@ function load_city_data(data) {
         const state = element.State_code;
 
         // Add city and state to the cities array
-        cities.push({ city: city, state: state, data: element });
+        cities.push(element);
     });
 
     //console.log(cities);
@@ -279,20 +287,25 @@ document.getElementById('resetButton').addEventListener('click', function() {
     let parkChart = d3.select("#parkChart");
     parkChart.selectAll('*').remove();
 
-    console.log(cityData);
-    // addCityChart(cityData);
-    // addParkChart(cityData);
+    console.log(cities);
+    addCityChart(cities);
+    addParkChart(cities);
   });
 
 // Load data from the Flask API
 d3.json('http://127.0.0.1:8080/api/all_data')
     .then(x => {
-        addCityChart(x);
-        addParkChart(x);
-        loadCityPolygons();
+        load_city_data(x);
+        // Return the promise to continue the chain
+        return d3.json('city.list.json');
+
+        
         //loadParkPolygons();
-        return load_city_data(x);
     })
     .then(x => {
         addCityMarkers(x);
+    }).then(x => {
+        addCityChart(cities);
+        addParkChart(cities);
+        loadCityPolygons();
     });
