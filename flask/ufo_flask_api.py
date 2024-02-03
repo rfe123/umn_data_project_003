@@ -11,7 +11,7 @@ engine = create_engine("sqlite:///ufo_db.sqlite")
 
 # Reflect the database tables explicitly
 Base = automap_base()
-Base.prepare(autoload_with=engine)
+Base.prepare(autoload_with=engine, reflect=True)
 
 # Save reference to the table
 print(Base.classes.keys())
@@ -27,7 +27,7 @@ app = Flask(__name__)
 #################################################
 
 @app.route("/api/data/<column_name>", methods=['GET'])
-def get_data(column_name):
+def get_data_by_column(column_name):
     # create session (link from Python to db)
     session = Session(engine)
 
@@ -45,6 +45,33 @@ def get_data(column_name):
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+@app.route("/api/all_data", methods=['GET'])
+def get_data():
+    # create session (link from python to db)
+    session = Session(engine)
+
+    # query the desired column
+    results = list(session.query(Ufo).all())
+
+    # close the session
+    session.close()
+          # Serialize the users into a list of dictionaries
+    ufo_list = []
+    for ufo in results:
+        ufo_dict = {}
+        for column in Ufo.__table__.columns:
+            ufo_dict[column.name] = getattr(ufo, column.name)
+        ufo_list.append(ufo_dict)
+
+    # Return the JSON list
+    response = jsonify(ufo_list)
+
+    # https://stackoverflow.com/questions/26980713/solve-cross-origin-resource-sharing-with-flask
+    response.headers.add('Access-Control-Allow-Origin', '*')
+
+    # Return the JSON dictionary
+    return response
+    
 # run the app!
 if __name__ == '__main__':
-   app.run(debug=True)
+    app.run(port=8080)

@@ -7,7 +7,7 @@ conn= sqlite3.connect('ufo_db.sqlite')
 
 
 # read the csv data into a dataframe
-df = pd.read_csv('ufo.csv')
+df = pd.read_csv('ufo_2019.csv')
 
 
 

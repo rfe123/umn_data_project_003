@@ -3,11 +3,19 @@ let myMap = L.map("map", {
     center: [37.09, -95.71],
     zoom: 5
 });
-
+let bounds = myMap.getBounds();
+console.log(bounds);
 // Add a tile layer.
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(myMap);
+
+function updateBounds() {
+    bounds = myMap.getBounds();
+    console.log(bounds);
+}// Add a moveend event listener to the map
+myMap.on('moveend', updateBounds);
+
 
 let cities = [];
 let cityData = [];
@@ -165,7 +173,7 @@ function addCityMarkers(localCityData) {
         }
     });
 
-    //console.log(cityData);
+
 
     cityData.forEach(city => {
         const marker = L.marker([city.coord.lat, city.coord.lon]).addTo(myMap);
@@ -179,6 +187,8 @@ function addCityMarkers(localCityData) {
         marker.bindPopup(city.name + ', ' + city.state);
     });
 }
+
+
 
 function top_cities(city_data, key, top = 10) {
     let sorted_cities = city_data.sort((a, b) => b[key] - a[key]);
@@ -250,8 +260,9 @@ function load_city_data(data) {
 };
 
 // Load data from the Flask API
-d3.json('http://127.0.0.1:8080/api/all_data')
+d3.json('http://127.0.0.1:8080/api/all_data/parks')
     .then(x => {
+        console.log(x);
         addCityChart(x);
         addParkChart(x);
         return load_city_data(x);
@@ -259,3 +270,14 @@ d3.json('http://127.0.0.1:8080/api/all_data')
     .then(x => {
         addCityMarkers(x);
     });
+
+d3.json('http://127.0.0.1:8080/api/all_data/ufo')
+    .then(x => {
+        console.log(x);
+        //addCityChart(x);
+        //addParkChart(x);
+        //return load_city_data(x);
+    })
+    //.then(x => {
+    //    addCityMarkers(x);
+    //});
