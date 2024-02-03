@@ -20,14 +20,32 @@ function update_city_stats(city) {
 
     text_element.text(city_data.City_Name + ', ' + city_data.State_code);
 
-    let cityDataDiv = d3.select("#cityChart");
-    cityDataDiv.selectAll('*').remove();
+    let container = d3.select("#cityChart");
+    container.selectAll('*').remove();
 
-    cityDataDiv.selectAll('p')
-        .data(Object.entries(city_data))
-        .enter()
-        .append('p')
-        .text(d => `${d[0]}: ${d[1]}`);
+    var table = container.append("table");
+
+    // Create table header
+    //var thead = table.append("thead");
+    // var headerRow = thead.append("tr");
+    // headerRow.selectAll("th")
+    //     .data([city.City_Name])
+    //     .enter().append("th")
+    //     .text(function (d) { return d; });
+
+    // Create table body
+    var tbody = table.append("tbody");
+    var rows = tbody.selectAll("tr")
+        .data(Object.entries(city.data))
+        .enter().append("tr");
+
+    // Create cells in each row
+    var cells = rows.selectAll("td")
+        .data(function (row) {
+            return Object.values(row);
+        })
+        .enter().append("td")
+        .text(function (d) { return d; });
 
 };
 
@@ -140,7 +158,7 @@ function update_park_stats(city) {
     chart.xAxis().labels().rotation(90);
 
     // create a column series and set the data
-    var series = chart.column(data.sort((a,b) => a.x.localeCompare(b.x)));
+    var series = chart.column(data.sort((a, b) => a.x.localeCompare(b.x)));
     series.name("Walkable Park Access");
 
 
@@ -220,16 +238,37 @@ function addParkChart(city_data) {
 
 function addCityChart(city_data) {
     let topPopulation = top_cities(city_data, 'Population', 25);
-    let parkDataDiv = d3.select("#cityChart");
-    parkDataDiv.selectAll('*').remove();
+    let container = d3.select("#cityChart");
+    container.selectAll('*').remove();
 
-    console.log(topPopulation);
+    //console.log(topPopulation);
+    // Create the table
+    var table = container.append("table");
 
-    parkDataDiv.selectAll('p')
+    // Create table header
+    var thead = table.append("thead");
+    var headerRow = thead.append("tr");
+    headerRow.selectAll("th")
+        .data(['City Name', 'Population'])
+        .enter().append("th")
+        .text(function (d) { return d; });
+
+    // Create table body
+    var tbody = table.append("tbody");
+    var rows = tbody.selectAll("tr")
         .data(topPopulation)
-        .enter()
-        .append('p')
-        .text(d => `${d.City_Name}: ${d.Population}`);
+        .enter().append("tr");
+
+    // Create cells in each row
+    var cells = rows.selectAll("td")
+        .data(function (row) {
+            return Object.values([row.City_Name, row.Population]);
+        })
+        .enter().append("td")
+        .text(function (d) { return d; });
+
+    // <table>
+    // <table>
 
 };
 
@@ -246,19 +285,16 @@ function load_city_data(data) {
     //console.log(cities);
 
     // Return the promise to continue the chain
-    
+    return d3.json('city.list.json');
 };
 
 // Load data from the Flask API
-d3.json('http://127.0.0.1:8080/api/all_data')
+d3.json('http://127.0.0.1:8080/api/alldata')
     .then(x => {
-        load_city_data(x);
-        return d3.json('city.list.json');
+        addCityChart(x);
+        addParkChart(x);
+        return load_city_data(x);
     })
     .then(x => {
         addCityMarkers(x);
-    })
-    .then(x => {
-        addCityChart(cities);
-        addParkChart(cities);   
     });

@@ -50,7 +50,7 @@ def get_data_by_column(column_name):
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
-@app.route("/api/all_data", methods=['GET'])
+@app.route("/api/alldata", methods=['GET'])
 def get_data():
     # create session (link from python to db)
     session = Session(engine)

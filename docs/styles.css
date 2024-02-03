@@ -9,6 +9,25 @@ header, footer {
   background-color: #333;
   color: #fff;
   padding: 10px 20px;
+  text-align: center;
+}
+
+a {
+  color: #fff;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th, td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
+}
+/* Alternate row colors */
+tr:nth-child(even) {
+  background-color: #c1b2b2;
 }
 
 /* Define main content layout */
