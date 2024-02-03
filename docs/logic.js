@@ -3,11 +3,19 @@ let myMap = L.map("map", {
     center: [37.09, -95.71],
     zoom: 5
 });
-
+let bounds = myMap.getBounds();
+console.log(bounds);
 // Add a tile layer.
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(myMap);
+
+function updateBounds() {
+    bounds = myMap.getBounds();
+    console.log(bounds);
+}// Add a moveend event listener to the map
+myMap.on('moveend', updateBounds);
+
 
 let cities = [];
 let cityData = [];
@@ -259,7 +267,7 @@ function addCityMarkers(localCityData) {
         }
     });
 
-    //console.log(cityData);
+
 
     function scaleValue(value, originalMin, originalMax, targetMin, targetMax) {
         return (value - originalMin) / (originalMax - originalMin) * (targetMax - targetMin) + targetMin;
@@ -311,6 +319,8 @@ function addCityMarkers(localCityData) {
         marker.bindTooltip(city.name + ', ' + city.state, { permanent: false, opacity: 1, autoClose: false });
     });
 }
+
+
 
 function top_cities(city_data, key, top = 10) {
     let sorted_cities = city_data.sort((a, b) => b[key] - a[key]);
@@ -441,9 +451,9 @@ document.getElementById('resetButton').addEventListener('click', function() {
   });
 
 // Load data from the Flask API
-d3.json('http://127.0.0.1:8080/api/alldata')
+d3.json('http://127.0.0.1:8080/api/alldata/')
     .then(x => {
-        load_city_data(x);
+        load_city_data(x.cities);
         // Return the promise to continue the chain
         return d3.json('city.list.json');
 
