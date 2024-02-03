@@ -260,24 +260,16 @@ function load_city_data(data) {
 };
 
 // Load data from the Flask API
-d3.json('http://127.0.0.1:8080/api/all_data/parks')
+d3.json('http://127.0.0.1:8080/api/all_data/')
     .then(x => {
-        console.log(x);
-        addCityChart(x);
-        addParkChart(x);
-        return load_city_data(x);
+        //console.log(x.cities);
+        //console.log(x.ufo);
+        addCityChart(x.cities);
+        addParkChart(x.cities);
+        return load_city_data(x.cities);
     })
     .then(x => {
         addCityMarkers(x);
     });
 
-d3.json('http://127.0.0.1:8080/api/all_data/ufo')
-    .then(x => {
-        console.log(x);
-        //addCityChart(x);
-        //addParkChart(x);
-        //return load_city_data(x);
-    })
-    //.then(x => {
-    //    addCityMarkers(x);
-    //});
+

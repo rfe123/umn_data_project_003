@@ -1,4 +1,4 @@
-id,city,state,location,year,city_latitude,city_longitude,report_link
+id,City_Name,State_Name,location,year,city_latitude,city_longitude,report_link
 1,Chester,VA,"Chester, VA",2019,37.343151515151526,-77.408581818182,http://www.nuforc.org/webreports/151/S151739.html
 2,Rocky Hill,CT,"Rocky Hill, CT",2019,41.66480000000001,-72.6392999999999,http://www.nuforc.org/webreports/145/S145297.html
 3,Ottawa,ON,"Ottawa, ON",2019,45.381382500000214,-75.70850071428617,http://www.nuforc.org/webreports/145/S145697.html
