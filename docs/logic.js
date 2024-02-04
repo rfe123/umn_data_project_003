@@ -281,12 +281,12 @@ function addCityMarkers(localCityData) {
     cities.forEach((element) => {
         // Assuming City_Name is the property in each element
         for (let i = 0; i < localCityData.length; i++) {
-            console.log("Comparing:", element.City_Name, element.State_code, localCityData[i].name, localCityData[i].state);
+            //console.log("Comparing:", element.City_Name, element.State_code, localCityData[i].name, localCityData[i].state);
             if (element.City_Name === localCityData[i].name && element.State_code === localCityData[i].state) {
                 // Add the matching city data to the cityData array
                 cityData[element.id] = { name: localCityData[i].name, state: element.State_code, coord: localCityData[i].coord, data: element};
-                console.log("Added to cityData:", element.id);
-                console.log("City Data:", cityData[element.id]);
+                //console.log("Added to cityData:", element.id);
+                //console.log("City Data:", cityData[element.id]);
             }
         }
     });
@@ -404,7 +404,7 @@ function addParkChart(city_data) {
         var row = walkable_cities[index];
         console.log(row.data.id);
         console.log(cityData[row.data.id]);
-        city_focus(cityData[row.data.id]);
+        //city_focus(cityData[row.data.id]);
     });
 
     // set the container id
@@ -452,7 +452,7 @@ function addCityChart(city_data) {
         .on("click", function (d, i, nodes) {
             //console.log(d);
             //console.log(i);
-            city_focus(cityData[i]);
+            //city_focus(cityData[i]);
         });
 };
 
