@@ -50,7 +50,6 @@ function update_city_stats(city) {
     let text_element = d3.select('#section2');
     let city_data = city.data;
 
-
     text_element.text(city_data.City_Name + ', ' + city_data.State_code);
 
     let container = d3.select("#cityChart");
@@ -194,6 +193,7 @@ function update_park_stats(city) {
     // set the container id
     chart.container("parkChart");
     // initiate drawing the chart
+    d3.select('#parkChart').style('height','350px');
     chart.draw();
 };
 
@@ -276,16 +276,23 @@ function addCityMarkers(localCityData) {
     //console.log(localCityData);
     addLegend();
 
+    //cityData[0] = null;
+
     cities.forEach((element) => {
         // Assuming City_Name is the property in each element
         for (let i = 0; i < localCityData.length; i++) {
-            if (element.City_Name === localCityData[i].name & element.State_code === localCityData[i].state) {
-                //console.log(localCityData[i].name);
+            console.log("Comparing:", element.City_Name, element.State_code, localCityData[i].name, localCityData[i].state);
+            if (element.City_Name === localCityData[i].name && element.State_code === localCityData[i].state) {
                 // Add the matching city data to the cityData array
-                cityData[element.id] = { name: localCityData[i].name, state: element.State_code, coord: localCityData[i].coord, data: element };
+                cityData[element.id] = { name: localCityData[i].name, state: element.State_code, coord: localCityData[i].coord, data: element};
+                console.log("Added to cityData:", element.id);
+                console.log("City Data:", cityData[element.id]);
             }
         }
     });
+    
+
+    console.log(cityData);
 
     function scaleValue(value, originalMin, originalMax, targetMin, targetMax) {
         return (value - originalMin) / (originalMax - originalMin) * (targetMax - targetMin) + targetMin;
@@ -350,7 +357,6 @@ function top_cities(city_data, key, top = 10) {
 function addParkChart(city_data) {
     //console.log(city_data);
     let text_element = d3.select('#section3');
-
     text_element.text('Overall Walkability');
 
     let walkable_cities = top_cities(city_data, 'Walkable_access_All', 100);
@@ -374,12 +380,12 @@ function addParkChart(city_data) {
     // create a chart
     chart = anychart.bar();
 
-    //chart.pointWidth();
+    chart.pointWidth();
     chart.yScale().minimum(0);
     chart.yScale().maximum(100);
 
     // set the padding between bars
-    chart.barsPadding(5);
+    chart.barGroupsPadding(1);
 
     // create a bar series and set the data
     var series1 = chart.bar(data1);
@@ -396,13 +402,16 @@ function addParkChart(city_data) {
     chart.listen("pointClick", function (e) {
         var index = e.iterator.getIndex();
         var row = walkable_cities[index];
-        city_focus(cityData[row.id]);
+        console.log(row.data.id);
+        console.log(cityData[row.data.id]);
+        city_focus(cityData[row.data.id]);
     });
 
     // set the container id
     chart.container("parkChart");
 
     // initiate drawing the chart
+    d3.select('#parkChart').style('height','500%');
     chart.draw();
 };
 
@@ -441,6 +450,8 @@ function addCityChart(city_data) {
     cells.filter(function (d, i) { return i === 0; }) // Filter to select the first 'td' entry
         .style("cursor", "pointer")
         .on("click", function (d, i, nodes) {
+            //console.log(d);
+            //console.log(i);
             city_focus(cityData[i]);
         });
 };
@@ -498,6 +509,6 @@ d3.json('http://127.0.0.1:8080/api/all_data/')
         addCityChart(cityData);
         addParkChart(cityData);
         loadCityPolygons();
-        console.log(cityData);
+        //console.log(cityData);
         //console.log(cities);
     });
