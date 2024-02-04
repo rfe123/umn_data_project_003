@@ -282,7 +282,7 @@ function addCityMarkers(localCityData) {
             if (element.City_Name === localCityData[i].name & element.State_code === localCityData[i].state) {
                 //console.log(localCityData[i].name);
                 // Add the matching city data to the cityData array
-                cityData.push({ name: localCityData[i].name, state: element.State_code, coord: localCityData[i].coord, data: element });
+                cityData[element.id] = { name: localCityData[i].name, state: element.State_code, coord: localCityData[i].coord, data: element };
             }
         }
     });
@@ -389,8 +389,7 @@ function addParkChart(city_data) {
     chart.listen("pointClick", function (e) {
         var index = e.iterator.getIndex();
         var row = walkable_cities[index];
-        console.log(row);
-        city_focus(row);
+        city_focus(cityData[row.id]);
     });
 
     // set the container id
@@ -414,7 +413,7 @@ function addCityChart(city_data) {
     var thead = table.append("thead");
     var headerRow = thead.append("tr");
     headerRow.selectAll("th")
-        .data(['City Name', 'Population'])
+        .data(['id', 'City Name', 'Population'])
         .enter().append("th")
         .text(function (d) { return d; });
 
@@ -427,7 +426,7 @@ function addCityChart(city_data) {
     // Create cells in each row
     var cells = rows.selectAll("td")
         .data(function (row) {
-            return Object.values([row.City_Name, row.Population]);
+            return Object.values([row.id, row.City_Name, row.Population]);
         })
         .enter().append("td")
         .text(function (d) { return d; });
@@ -435,11 +434,9 @@ function addCityChart(city_data) {
     cells.filter(function (d, i) { return i === 0; }) // Filter to select the first 'td' entry
         .on("click", function (d, i, nodes) {
             // Access the parent object associated with the clicked cell
-            var parentObject = d3.select(nodes[i].parentNode).datum();
-
-            // Handle click event with access to the parent object
-            console.log("Clicked on: " + d);
-            console.log("Parent Object:", parentObject);
+            //console.log(i);
+            //console.log(cityData[i]);
+            city_focus(cityData[i]);
         });
 };
 
@@ -450,7 +447,7 @@ function load_city_data(data) {
         const state = element.State_code;
 
         // Add city and state to the cities array
-        cities[element.id] = element;
+        cities.push(element);
     });
 
     //console.log(cities);
