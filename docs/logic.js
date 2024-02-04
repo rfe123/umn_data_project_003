@@ -19,7 +19,7 @@ myMap.on('moveend', updateBounds);
 
 let cities = [];
 let cityData = [];
-let colors = ['#7CCD7C', '#B3EE3A', '#FFFF00', '#FFD700', '#FFA500', '#FF6347'];
+let colors = ['#7CCD7C', '#B3EE3A', '#FFFF00', '#FFD700', '#FFA500', '#FF6347'].reverse();
 let grades = [1, 10, 20, 30, 40, 50];
 let drawnPolygonList = [];
 
@@ -28,7 +28,7 @@ function update_city_stats(city) {
     //console.log(city.data);
     let text_element = d3.select('#section2');
     let city_data = city.data;
-    
+
 
     text_element.text(city_data.City_Name + ', ' + city_data.State_code);
 
@@ -183,63 +183,63 @@ function update_park_stats(city) {
 function drawCityBoundary(currentCityName, currentStateName) {
 
     //const cityName = currentCityName;
-    
+
     console.log('currentCity ' + currentCityName);
     console.log('currentState ' + currentStateName);
 
-    for (i=0; i <= cityPolygonList.features.length - 1; i++) {
+    for (i = 0; i <= cityPolygonList.features.length - 1; i++) {
 
         //console.log('city name is ' + cityPolygonList.features[i].properties.NAME + i);
 
-        if (cityPolygonList.features[i].properties.NAME === currentCityName && 
+        if (cityPolygonList.features[i].properties.NAME === currentCityName &&
             cityPolygonList.features[i].properties.ST === currentStateName) {
 
-                console.log('type is ' + cityPolygonList.features[i].geometry.type + i)
+            console.log('type is ' + cityPolygonList.features[i].geometry.type + i)
 
-                let coordinatesList = cityPolygonList.features[i].geometry.coordinates;
-                console.log(coordinatesList);
-                console.log(cityPolygonList.features[i])
+            let coordinatesList = cityPolygonList.features[i].geometry.coordinates;
+            console.log(coordinatesList);
+            console.log(cityPolygonList.features[i])
 
-                let geojsonFeature = {
-                    type: 'Feature',
-                    geometry: {
-                      type: cityPolygonList.features[i].geometry.type,
-                      coordinates: coordinatesList
-                    },
-                     properties: {
-                        "color": "blue",
-                        "fill-opacity": 0.5
-                     }
-                  };
-                  
-                  L.geoJSON(geojsonFeature).addTo(myMap);
-                  console.log('added map for :' + currentCityName);
-                  //drawnPolygonList.push(geojsonFeature);
-        }          
+            let geojsonFeature = {
+                type: 'Feature',
+                geometry: {
+                    type: cityPolygonList.features[i].geometry.type,
+                    coordinates: coordinatesList
+                },
+                properties: {
+                    "color": "blue",
+                    "fill-opacity": 0.5
+                }
+            };
+
+            L.geoJSON(geojsonFeature).addTo(myMap);
+            console.log('added map for :' + currentCityName);
+            //drawnPolygonList.push(geojsonFeature);
+        }
     }
 }
 
 
-function addLegend(){
+function addLegend() {
     let legend = L.control({ position: 'bottomright' })
     legend.onAdd = function () {
-     let container = L.DomUtil.create('div', 'info legend');
-     let p = L.DomUtil.create('p', 'legend-title');
-     p.textContent = 'Park area per thousand people, acres';
-     container.appendChild(p);
-     let div = L.DomUtil.create('div', 'info legend');
-     container.style.backgroundColor = 'white';
-     div.style.width = '120px'; 
-     div.style.height = '150px';  
+        let container = L.DomUtil.create('div', 'info legend');
+        let p = L.DomUtil.create('p', 'legend-title');
+        p.textContent = 'Park area per thousand people, acres';
+        container.appendChild(p);
+        let div = L.DomUtil.create('div', 'info legend');
+        container.style.backgroundColor = 'white';
+        div.style.width = '120px';
+        div.style.height = '150px';
         for (let i = 0; i < colors.length; i++) {
-          div.innerHTML +=
-            '<div><span style="background:' + colors[i] + '; width: 20px; height: 20px; display: inline-block;"></span> ' +
-            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            div.innerHTML +=
+                '<div><span style="background:' + colors[i] + '; width: 20px; height: 20px; display: inline-block;"></span> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
         }
-    container.appendChild(div);
-     return container;
-   };
-   legend.addTo(myMap);
+        container.appendChild(div);
+        return container;
+    };
+    legend.addTo(myMap);
 }
 function addCityMarkers(localCityData) {
     // Handle the loaded data
@@ -252,7 +252,7 @@ function addCityMarkers(localCityData) {
             if (element.City_Name === localCityData[i].name & element.State_code === localCityData[i].state) {
                 //console.log(localCityData[i].name);
                 // Add the matching city data to the cityData array
-                cityData.push({ name: localCityData[i].name, state: element.State_code, coord: localCityData[i].coord, data:element});
+                cityData.push({ name: localCityData[i].name, state: element.State_code, coord: localCityData[i].coord, data: element });
             }
         }
     });
@@ -266,35 +266,37 @@ function addCityMarkers(localCityData) {
     function getMarkerRadius(population) {
         const originalMin = 200000;
         const originalMax = 8850000;
-        const targetMin = 5; 
-        const targetMax = 50; 
+        const targetMin = 5;
+        const targetMax = 50;
 
         return scaleValue(population, originalMin, originalMax, targetMin, targetMax);
-      }
+    }
 
-      function getMarkerColor(acres) {
+    function getMarkerColor(acres) {
         let normalizedAcres = (acres - grades[0]) / (grades[grades.length - 1] - grades[0]);
         normalizedAcres = Math.max(0, Math.min(normalizedAcres, 1));
         let colorIndex = Math.floor(normalizedAcres * (colors.length - 1));
         colorIndex = Math.max(0, Math.min(colorIndex, colors.length - 1));
         let calculatedColor = colors[colorIndex];
         return calculatedColor;
-        }
+    }
     cityData.forEach(city => {
         //define the tree icon
         const treeIcon = L.icon({
             iconUrl: 'treeIcon.png',
-            iconSize: [32, 32], 
-            iconAnchor: [16, 16], 
-            popupAnchor: [0, -16] 
-          });
-        let marker = L.marker([city.coord.lat, city.coord.lon], { icon: treeIcon }).addTo(myMap);
-        //   const marker = L.circleMarker([city.coord.lat, city.coord.lon], {radius: getMarkerRadius(city.data.Population),
-        //     fillColor: getMarkerColor(city.data.Acres_per_thousand_people),
-        //     color: "black",
-        //     weight: 1,
-        //     opacity: 1,
-        //     fillOpacity: 0.8}).addTo(myMap);
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
+            popupAnchor: [0, -16]
+        });
+        // let marker = L.marker([city.coord.lat, city.coord.lon], { icon: treeIcon }).addTo(myMap);
+        const marker = L.circleMarker([city.coord.lat, city.coord.lon], {
+            radius: getMarkerRadius(city.data.Population),
+            fillColor: getMarkerColor(city.data.Acres_per_thousand_people),
+            color: "black",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+        }).addTo(myMap);
         marker.on({
             //Mouse Click
             click: function click_city_marker(event) {
@@ -340,7 +342,17 @@ function addParkChart(city_data) {
 
     let data1 = [];
     walkable_cities.forEach(x => {
-        data1.push([x.City_Name + ', ' + x.State_code, (x.Walkable_access_All * 100)]);
+        // data1.push([x.City_Name + ', ' + x.State_code, ()]);
+        data1.push(
+            {
+                x: x.City_Name + ', ' + x.State_code,
+                value: x.Walkable_access_All * 100,
+                normal: {
+                    fill: get_value_color(x.Walkable_access_All),
+                    stroke: null
+                }
+            },
+        )
     });
 
     // create a chart
@@ -355,8 +367,8 @@ function addParkChart(city_data) {
         data2.push([x.City_Name + ', ' + x.State_code, (x.Walkability_Low_Income * 100)]);
     });
 
-    var series2 = chart.bar(data2);
-    series2.name("Low Income Walkability");
+    // var series2 = chart.bar(data2);
+    // series2.name("Low Income Walkability");
 
     // set the container id
     chart.container("parkChart");
@@ -421,9 +433,9 @@ function load_city_data(data) {
 let cityPolygonList = [];
 function loadCityPolygons() {
     d3.json('output.geojson')
-      .then(function(data) {
-        cityPolygonList = data;
-        console.log('GeoJSON Data:', cityPolygonList);
+        .then(function (data) {
+            cityPolygonList = data;
+            console.log('GeoJSON Data:', cityPolygonList);
         })
 }
 
@@ -437,9 +449,9 @@ function loadCityPolygons() {
 // }
 
 // Add a reset button event listener
-document.getElementById('resetButton').addEventListener('click', function() {
+document.getElementById('resetButton').addEventListener('click', function () {
     // Reset the map view to the initial position and zoom
-    myMap.setView( [37.09, -95.71], 5);
+    myMap.setView([37.09, -95.71], 5);
 
     let cityChart = d3.select("#cityChart");
     cityChart.selectAll('*').remove();
