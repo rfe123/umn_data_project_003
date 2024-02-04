@@ -27,8 +27,8 @@ function map_reset() {
     parkChart.selectAll('*').remove();
 
     //console.log(cities);
-    addCityChart(cities);
-    addParkChart(cities);
+    addCityChart(cityData);
+    addParkChart(cityData);
 };
 
 function city_focus(city) {
@@ -343,7 +343,7 @@ function addCityMarkers(localCityData) {
 }
 
 function top_cities(city_data, key, top = 10) {
-    let sorted_cities = city_data.sort((a, b) => b[key] - a[key]);
+    let sorted_cities = city_data.sort((a, b) => b.data[key] - a.data[key]);
     return sorted_cities.slice(0, top);
 };
 
@@ -361,10 +361,10 @@ function addParkChart(city_data) {
         // data1.push([x.City_Name + ', ' + x.State_code, ()]);
         data1.push(
             {
-                x: x.City_Name + ', ' + x.State_code,
-                value: x.Walkable_access_All * 100,
+                x: x.data.City_Name + ', ' + x.data.State_code,
+                value: x.data.Walkable_access_All * 100,
                 normal: {
-                    fill: get_value_color(x.Walkable_access_All),
+                    fill: get_value_color(x.data.Walkable_access_All),
                     stroke: null
                 }
             },
@@ -433,7 +433,7 @@ function addCityChart(city_data) {
     // Create cells in each row
     var cells = rows.selectAll("td")
         .data(function (row) {
-            return Object.values([row.id, row.City_Name, row.Population]);
+            return Object.values([row.data.id, row.data.City_Name, row.data.Population]);
         })
         .enter().append("td")
         .text(function (d) { return d; });
@@ -481,7 +481,7 @@ function loadCityPolygons() {
 
 // Add a reset button event listener
 document.getElementById('resetButton').addEventListener('click', function () {
-    map_reset()
+    map_reset();
 });
 
 // Load data from the Flask API
@@ -495,8 +495,8 @@ d3.json('http://127.0.0.1:8080/api/all_data/')
     .then(x => {
         addCityMarkers(x);
     }).then(x => {
-        addCityChart(cities);
-        addParkChart(cities);
+        addCityChart(cityData);
+        addParkChart(cityData);
         loadCityPolygons();
         console.log(cityData);
         //console.log(cities);
