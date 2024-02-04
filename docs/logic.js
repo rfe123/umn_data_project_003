@@ -21,6 +21,7 @@ let cities = [];
 let cityData = [];
 let colors = ['#7CCD7C', '#B3EE3A', '#FFFF00', '#FFD700', '#FFA500', '#FF6347'];
 let grades = [1, 10, 20, 30, 40, 50];
+let drawnPolygonList = [];
 
 function update_city_stats(city) {
     //Load the city data into section 2 visualization
@@ -186,47 +187,36 @@ function drawCityBoundary(currentCityName, currentStateName) {
     console.log('currentCity ' + currentCityName);
     console.log('currentState ' + currentStateName);
 
-    for (i=0; i <= cityPolygonList.features.length; i++) {
+    for (i=0; i <= cityPolygonList.features.length - 1; i++) {
+
+        //console.log('city name is ' + cityPolygonList.features[i].properties.NAME + i);
+
         if (cityPolygonList.features[i].properties.NAME === currentCityName && 
             cityPolygonList.features[i].properties.ST === currentStateName) {
 
-            console.log(cityPolygonList.features[i].geometry.coordinates);
-            console.log('length '  + cityPolygonList.features[i].geometry.coordinates.length);
+                console.log('type is ' + cityPolygonList.features[i].geometry.type + i)
 
-            console.log(cityPolygonList.features[i].properties);
+                let coordinatesList = cityPolygonList.features[i].geometry.coordinates;
+                console.log(coordinatesList);
+                console.log(cityPolygonList.features[i])
 
-            let coordinatesList = cityPolygonList.features[i].geometry.coordinates;
-            //console.log('boundariesList ' + cityPolygonList.features[i].geometry);
-
-                console.log(coordinatesList[0]);
-                // Create a Polygon, and pass in some initial options.
-                L.polyline(coordinatesList[0]
-                //     [45.54, -122.68],
-                //     [45.55, -122.68],
-                //     [45.55, -122.66]
-                , {
-                    color: "darkgreen",
-                   // fillColor: "green",
-                   // fillOpacity: 0.5
-                }).addTo(myMap);
-            // for (j=0; j <= coordinatesList.length; j ++) {
-            //     console.log(coordinatesList[j]);
-            //     // Create a Polygon, and pass in some initial options.
-            //     L.polygon(coordinatesList[j]
-            //     //     [45.54, -122.68],
-            //     //     [45.55, -122.68],
-            //     //     [45.55, -122.66]
-            //     , {
-            //         color: "darkgreen",
-            //         fillColor: "green",
-            //         fillOpacity: 0.5
-            //     }).addTo(myMap);
-            // }
-            
-        }
-
+                let geojsonFeature = {
+                    type: 'Feature',
+                    geometry: {
+                      type: cityPolygonList.features[i].geometry.type,
+                      coordinates: coordinatesList
+                    },
+                     properties: {
+                        "color": "blue",
+                        "fill-opacity": 0.5
+                     }
+                  };
+                  
+                  L.geoJSON(geojsonFeature).addTo(myMap);
+                  console.log('added map for :' + currentCityName);
+                  //drawnPolygonList.push(geojsonFeature);
+        }          
     }
-    
 }
 
 
@@ -292,27 +282,39 @@ function addCityMarkers(localCityData) {
         }
     cityData.forEach(city => {
         //define the tree icon
-        // const customIcon = L.icon({
-        //     iconUrl: 'tree1.png',
-        //     iconSize: [32, 32], // Set the size of your icon
-        //     iconAnchor: [16, 16], // Set the anchor point
-        //     popupAnchor: [0, -16] // Set the popup anchor point
-        //   });
-        
-          const marker = L.circleMarker([city.coord.lat, city.coord.lon], {radius: getMarkerRadius(city.data.Population),
-            fillColor: getMarkerColor(city.data.Acres_per_thousand_people),
-            color: "black",
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.8}).addTo(myMap);
+        const treeIcon = L.icon({
+            iconUrl: 'treeIcon.png',
+            iconSize: [32, 32], 
+            iconAnchor: [16, 16], 
+            popupAnchor: [0, -16] 
+          });
+        let marker = L.marker([city.coord.lat, city.coord.lon], { icon: treeIcon }).addTo(myMap);
+        //   const marker = L.circleMarker([city.coord.lat, city.coord.lon], {radius: getMarkerRadius(city.data.Population),
+        //     fillColor: getMarkerColor(city.data.Acres_per_thousand_people),
+        //     color: "black",
+        //     weight: 1,
+        //     opacity: 1,
+        //     fillOpacity: 0.8}).addTo(myMap);
         marker.on({
             //Mouse Click
             click: function click_city_marker(event) {
+
+                //if (geojsonFeature) {
+                //    myMap.removeLayer(geojsonFeature);
+                //}
                 update_city_stats(city);
                 update_park_stats(city);
                 //zoom to city level upon click
-                myMap.setView(marker.getLatLng(), 12); 
-                //drawCityBoundary(city.name, city.state);
+                // const zoomTreeIcon = L.icon({
+                //     iconUrl: 'treeIcon.png',
+                //     iconSize: [64, 64], 
+                //     iconAnchor: [32, 32], 
+                //     popupAnchor: [0, -32] 
+                // });
+                // let markerZoom = L.marker([city.coord.lat, city.coord.lon], { icon: zoomTreeIcon }).addTo(myMap);
+                myMap.setView(marker.getLatLng(), 12);
+
+                drawCityBoundary(city.name, city.state);
             }
         });
         //marker.bindPopup(city.name + ', ' + city.state);
@@ -418,7 +420,7 @@ function load_city_data(data) {
 
 let cityPolygonList = [];
 function loadCityPolygons() {
-    d3.json('cityPolygons.geojson')
+    d3.json('output.geojson')
       .then(function(data) {
         cityPolygonList = data;
         console.log('GeoJSON Data:', cityPolygonList);
@@ -448,7 +450,7 @@ document.getElementById('resetButton').addEventListener('click', function() {
     console.log(cities);
     addCityChart(cities);
     addParkChart(cities);
-  });
+});
 
 // Load data from the Flask API
 d3.json('http://127.0.0.1:8080/api/all_data/')
@@ -465,3 +467,4 @@ d3.json('http://127.0.0.1:8080/api/all_data/')
         addParkChart(cities);
         loadCityPolygons();
     });
+
