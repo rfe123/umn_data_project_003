@@ -90,7 +90,7 @@ main {
 .chart2 {
   flex: none;
   margin-bottom: 10px; /* Adjust margin as needed */
-  height: 345px;
+  height: 360px;
 }
 
 .controls button {
