@@ -353,7 +353,7 @@ function addParkChart(city_data) {
 
     text_element.text('Overall Walkability');
 
-    let walkable_cities = top_cities(city_data, 'Walkable_access_All', 10);
+    let walkable_cities = top_cities(city_data, 'Walkable_access_All', 100);
     //console.log(walkable_cities);
 
     let data1 = [];
@@ -364,7 +364,8 @@ function addParkChart(city_data) {
                 x: x.City_Name + ', ' + x.State_code,
                 value: x.Walkable_access_All * 100,
                 normal: {
-                    fill: get_value_color(city_data.Walkable_access_All)
+                    fill: get_value_color(x.Walkable_access_All),
+                    stroke: null
                 }
             },
         )
@@ -373,15 +374,12 @@ function addParkChart(city_data) {
     // create a chart
     chart = anychart.bar();
 
-    chart.pointWidth(20);
+    //chart.pointWidth();
     chart.yScale().minimum(0);
     chart.yScale().maximum(100);
 
     // set the padding between bars
-    chart.barsPadding(10);
-
-    // set the padding between bar groups
-    chart.barGroupsPadding(20);
+    chart.barsPadding(5);
 
     // create a bar series and set the data
     var series1 = chart.bar(data1);
@@ -441,10 +439,8 @@ function addCityChart(city_data) {
         .text(function (d) { return d; });
 
     cells.filter(function (d, i) { return i === 0; }) // Filter to select the first 'td' entry
+        .style("cursor", "pointer")
         .on("click", function (d, i, nodes) {
-            // Access the parent object associated with the clicked cell
-            //console.log(i);
-            //console.log(cityData[i]);
             city_focus(cityData[i]);
         });
 };

@@ -25,6 +25,12 @@ th, td {
   padding: 8px;
   text-align: left;
 }
+
+th {
+  background-color: royalblue;
+  color: #fff;
+  position: sticky;
+}
 /* Alternate row colors */
 tr:nth-child(even) {
   background-color: #c1b2b2;
@@ -77,6 +83,7 @@ main {
   margin-bottom: 2px;
   display: flex;
   flex-direction: column;
+  height: 400px;
   overflow-y: scroll; 
 }
 
@@ -84,13 +91,14 @@ main {
 .chart1 {
   flex: none;
   margin-bottom: 10px; /* Adjust margin as needed */
-  height: 360px;
+  height: 350px;
 }
 
 .chart2 {
   flex: none;
   margin-bottom: 10px; /* Adjust margin as needed */
-  height: 360px;
+  height: 350px;
+  overflow-y: scroll;
 }
 
 .controls button {
