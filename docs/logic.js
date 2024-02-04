@@ -353,12 +353,21 @@ function addParkChart(city_data) {
 
     text_element.text('Overall Walkability');
 
-    let walkable_cities = top_cities(city_data, 'Walkable_access_All', 100);
+    let walkable_cities = top_cities(city_data, 'Walkable_access_All', 10);
     //console.log(walkable_cities);
 
     let data1 = [];
     walkable_cities.forEach(x => {
-        data1.push([x.City_Name + ', ' + x.State_code, (x.Walkable_access_All * 100)]);
+        // data1.push([x.City_Name + ', ' + x.State_code, ()]);
+        data1.push(
+            {
+                x: x.City_Name + ', ' + x.State_code,
+                value: x.Walkable_access_All * 100,
+                normal: {
+                    fill: get_value_color(city_data.Walkable_access_All)
+                }
+            },
+        )
     });
 
     // create a chart
@@ -378,13 +387,13 @@ function addParkChart(city_data) {
     var series1 = chart.bar(data1);
     series1.name("Walkability");
 
-    let data2 = [];
-    walkable_cities.forEach(x => {
-        data2.push([x.City_Name + ', ' + x.State_code, (x.Walkability_Low_Income * 100)]);
-    });
+    // let data2 = [];
+    // walkable_cities.forEach(x => {
+    //     data2.push([x.City_Name + ', ' + x.State_code, (x.Walkability_Low_Income * 100)]);
+    // });
 
-    var series2 = chart.bar(data2);
-    series2.name("Low Income Walkability");
+    // var series2 = chart.bar(data2);
+    // series2.name("Low Income Walkability");
 
     chart.listen("pointClick", function (e) {
         var index = e.iterator.getIndex();
