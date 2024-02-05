@@ -42,7 +42,6 @@ function get_value_color(value) {
     }
 };
 
-
 // Selection Functions
 // Update City graphic
 function selected_city_chart(city) {
@@ -179,7 +178,6 @@ function selected_park_chart(city) {
     // create a column series and set the data
     var series = chart.column(data.sort((a, b) => a.x.localeCompare(b.x)));
     series.name("Walkable Park Access");
-
 
     // set the container id
     chart.container("parkChart");
