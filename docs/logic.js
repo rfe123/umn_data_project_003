@@ -23,7 +23,7 @@ let colors = ['#7CCD7C', '#B3EE3A', '#FFFF00', '#FFD700', '#FFA500', '#FF6347'].
 let grades = [1, 10, 20, 30, 40, 50];
 let drawnPolygonList = [];
 
-function update_city_stats(city) {
+function selected_city_chart(city) {
     //Load the city data into section 2 visualization
     //console.log(city.data);
     let text_element = d3.select('#section2');
@@ -72,11 +72,7 @@ function get_value_color(value) {
     }
 }
 
-function park_plot_data(city) {
-
-}
-
-function update_park_stats(city) {
+function selected_park_chart(city) {
     //Load the city data into section 2 visualization
     let text_element = d3.select('#section3');
 
@@ -311,8 +307,8 @@ function addCityMarkers(localCityData) {
                 //if (geojsonFeature) {
                 //    myMap.removeLayer(geojsonFeature);
                 //}
-                update_city_stats(city);
-                update_park_stats(city);
+                selected_city_chart(city);
+                selected_park_chart(city);
                 //zoom to city level upon click
                 // const zoomTreeIcon = L.icon({
                 //     iconUrl: 'treeIcon.png',
@@ -336,7 +332,7 @@ function top_cities(city_data, key, top = 10) {
     return sorted_cities.slice(0, top);
 };
 
-function addParkChart(city_data) {
+function overall_parks_chart(city_data) {
     //console.log(city_data);
     let text_element = d3.select('#section3');
 
@@ -382,7 +378,7 @@ function addParkChart(city_data) {
     chart.draw();
 };
 
-function addCityChart(city_data) {
+function overall_cities_chart(city_data) {
     let text_element = d3.select('#section2');
     text_element.text('Overall City Populations');
     let topPopulation = top_cities(city_data, 'Population', 100);
@@ -472,8 +468,8 @@ document.getElementById('resetButton').addEventListener('click', function () {
     parkChart.selectAll('*').remove();
 
     console.log(cities);
-    addCityChart(cities);
-    addParkChart(cities);
+    overall_cities_chart(cities);
+    overall_parks_chart(cities);
 });
 
 // Load data from the Flask API
@@ -487,8 +483,8 @@ d3.json('http://127.0.0.1:8080/api/all_data/')
     .then(x => {
         addCityMarkers(x);
     }).then(x => {
-        addCityChart(cities);
-        addParkChart(cities);
+        overall_cities_chart(cities);
+        overall_parks_chart(cities);
         loadCityPolygons();
     });
 
