@@ -3,10 +3,12 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from flask import Flask, jsonify
+from flask_cors import CORS
 
 #################################################
 # Database Setup
 #################################################
+
 engine = create_engine("sqlite:///combined_db.sqlite")
 
 # Reflect the database tables explicitly
@@ -22,6 +24,7 @@ Cities = Base.classes.cities
 # Flask Setup
 #################################################
 app = Flask(__name__)
+
 
 #################################################
 # Flask Routes
@@ -112,7 +115,7 @@ def get_all_data():
     response.headers.add('Access-Control-Allow-Origin', '*')
 
     return response
-
+       
 # Remove the individual "/api/all_data/ufo" and "/api/all_data/parks" endpoints
 
 # run the app!

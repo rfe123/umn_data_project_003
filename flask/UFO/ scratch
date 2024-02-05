@@ -1,0 +1,38 @@
+@app.route("/api/cities/<neLat>/<neLng>/<swLat>/<swLng>/")
+def dynamic_lookup(neLat, neLng, swLat, swLng):
+    # Print column names for debugging
+    column_names = [column.name for column in Cities.__table__.columns]
+    print(column_names)
+    
+    # Create a session
+    session = Session(engine)
+    
+    # Define the columns you want to retrieve from the "cities" table
+    sel = [Cities.city_name, Cities.state_code]
+    
+    # Filter cities within the specified bounding box
+    city_results = session.query(*sel).\
+        filter(Cities.city_latitude >= swLat).\
+        filter(Cities.city_latitude <= neLat).\
+        filter(Cities.city_longitude >= swLng).\
+        filter(Cities.city_longitude <= neLng).all()
+    
+    # Close the session
+    session.close()
+    
+    # Serialize the results into JSON
+    combined_data = {"cities": []}
+    for city in city_results:
+        city_dict = {}
+        for column in Cities.__table__.columns:
+            city_dict[column.name] = getattr(city, column.name)
+        combined_data["cities"].append(city_dict)
+    
+    # Return the JSON response with CORS header
+    response = jsonify(combined_data)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    
+    return response
+ # Return the list of cities' data outside the loop
+
+        

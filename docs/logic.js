@@ -4,17 +4,33 @@ let myMap = L.map("map", {
     zoom: 5
 });
 let bounds = myMap.getBounds();
-console.log(bounds);
+//console.log(bounds);
 // Add a tile layer.
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(myMap);
 
 function updateBounds() {
-    bounds = myMap.getBounds();
-    console.log(bounds);
-}// Add a moveend event listener to the map
-myMap.on('moveend', updateBounds);
+    // Get the map bounds and return them
+    var bounds = myMap.getBounds();
+    return bounds;
+}
+// Add a moveend event listener to the map
+myMap.on('moveend', function() {
+    // Call the updateBounds function and store the result in mapBound
+    var mapBound = updateBounds();
+    
+    // Get the latitude and longitude of the northeast and southwest corners of the map bounds
+    var mapBoundCoord = {
+        "neLat": mapBound.getNorthEast().lat,
+        "neLng": mapBound.getNorthEast().lng,
+        "swLat": mapBound.getSouthWest().lat, // Corrected variable name 'sqLat' to 'swLat'
+        "swLng": mapBound.getSouthWest().lng  // Corrected variable name 'swLng' to 'swLng'
+         }
+        console.log(mapBoundCoord);
+        }
+    );
+
 
 
 let cities = [];
