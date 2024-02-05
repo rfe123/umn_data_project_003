@@ -212,7 +212,8 @@ function drawCityBoundary(currentCityName, currentStateName) {
                 }
             };
 
-            L.geoJSON(geojsonFeature).addTo(myMap);
+            // create the geoJSON layer and assign an ID to remove it later
+            L.geoJSON(geojsonFeature, { id: 'geolayer' }).addTo(myMap);  //this replaces line 215 (in my code) in the script under the drawCityBoundary function
             console.log('added map for :' + currentCityName);
             //drawnPolygonList.push(geojsonFeature);
         }
@@ -300,6 +301,12 @@ function addCityMarkers(localCityData) {
         marker.on({
             //Mouse Click
             click: function click_city_marker(event) {
+                // remove the GeoJSON polygon from the map
+                myMap.eachLayer(function (layer) {
+                    if (layer.options && layer.options.id === 'geolayer') {
+                        myMap.removeLayer(layer);
+                    }
+                });
 
                 //if (geojsonFeature) {
                 //    myMap.removeLayer(geojsonFeature);
@@ -323,8 +330,6 @@ function addCityMarkers(localCityData) {
         marker.bindTooltip(city.name + ', ' + city.state, { permanent: false, opacity: 1, autoClose: false });
     });
 }
-
-
 
 function top_cities(city_data, key, top = 10) {
     let sorted_cities = city_data.sort((a, b) => b[key] - a[key]);
@@ -362,10 +367,10 @@ function addParkChart(city_data) {
     var series1 = chart.bar(data1);
     series1.name("Walkability");
 
-    let data2 = [];
-    walkable_cities.forEach(x => {
-        data2.push([x.City_Name + ', ' + x.State_code, (x.Walkability_Low_Income * 100)]);
-    });
+    // let data2 = [];
+    // walkable_cities.forEach(x => {
+    //     data2.push([x.City_Name + ', ' + x.State_code, (x.Walkability_Low_Income * 100)]);
+    // });
 
     // var series2 = chart.bar(data2);
     // series2.name("Low Income Walkability");
@@ -452,6 +457,13 @@ function loadCityPolygons() {
 document.getElementById('resetButton').addEventListener('click', function () {
     // Reset the map view to the initial position and zoom
     myMap.setView([37.09, -95.71], 5);
+
+    // remove the GeoJSON polygon from the map
+    myMap.eachLayer(function (layer) {
+        if (layer.options && layer.options.id === 'geolayer') {
+            myMap.removeLayer(layer);
+        }
+    });
 
     let cityChart = d3.select("#cityChart");
     cityChart.selectAll('*').remove();
