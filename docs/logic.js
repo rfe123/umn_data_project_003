@@ -1,34 +1,55 @@
+// Variables
+
 // Create a map object.
 let myMap = L.map("map", {
     center: [37.09, -95.71],
     zoom: 5
 });
-let bounds = myMap.getBounds();
-console.log(bounds);
-// Add a tile layer.
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(myMap);
-
-function updateBounds() {
-    bounds = myMap.getBounds();
-    console.log(bounds);
-}// Add a moveend event listener to the map
-myMap.on('moveend', updateBounds);
-
 
 let cities = [];
 let cityData = [];
 let colors = ['#7CCD7C', '#B3EE3A', '#FFFF00', '#FFD700', '#FFA500', '#FF6347'].reverse();
 let grades = [1, 10, 20, 30, 40, 50];
 let drawnPolygonList = [];
+let cityPolygonList = [];
 
+//Map Init
+let bounds = myMap.getBounds();
+console.log(bounds);
+
+// Add a tile layer.
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(myMap);
+
+
+//Support functions
+function updateBounds() {
+    bounds = myMap.getBounds();
+    console.log(bounds);
+}// Add a moveend event listener to the map
+myMap.on('moveend', updateBounds);
+
+// Update bar chart color by percent values
+function get_value_color(value) {
+    switch (true) {
+        case (value < 0.50):
+            return 'red';
+        case (value >= 0.50 && value < 0.70):
+            return 'orange';
+        case (value >= 0.70):
+            return 'green';
+    }
+};
+
+
+// Selection Functions
+// Update City graphic
 function selected_city_chart(city) {
     //Load the city data into section 2 visualization
     //console.log(city.data);
     let text_element = d3.select('#section2');
     let city_data = city.data;
-
 
     text_element.text(city_data.City_Name + ', ' + city_data.State_code);
 
@@ -61,17 +82,7 @@ function selected_city_chart(city) {
 
 };
 
-function get_value_color(value) {
-    switch (true) {
-        case (value < 0.50):
-            return 'red';
-        case (value >= 0.50 && value < 0.70):
-            return 'orange';
-        case (value >= 0.70):
-            return 'green';
-    }
-}
-
+// Update park chart for selection
 function selected_park_chart(city) {
     //Load the city data into section 2 visualization
     let text_element = d3.select('#section3');
@@ -176,10 +187,8 @@ function selected_park_chart(city) {
     chart.draw();
 };
 
+// Add city polygon
 function drawCityBoundary(currentCityName, currentStateName) {
-
-    //const cityName = currentCityName;
-
     console.log('currentCity ' + currentCityName);
     console.log('currentState ' + currentStateName);
 
@@ -216,7 +225,8 @@ function drawCityBoundary(currentCityName, currentStateName) {
     }
 }
 
-
+//Marker Functions
+// Add Map Legend
 function addLegend() {
     let legend = L.control({ position: 'bottomright' })
     legend.onAdd = function () {
@@ -238,6 +248,8 @@ function addLegend() {
     };
     legend.addTo(myMap);
 }
+
+// Add markers
 function addCityMarkers(localCityData) {
     // Handle the loaded data
     //console.log(localCityData);
@@ -253,8 +265,6 @@ function addCityMarkers(localCityData) {
             }
         }
     });
-
-
 
     function scaleValue(value, originalMin, originalMax, targetMin, targetMax) {
         return (value - originalMin) / (originalMax - originalMin) * (targetMax - targetMin) + targetMin;
@@ -277,6 +287,7 @@ function addCityMarkers(localCityData) {
         let calculatedColor = colors[colorIndex];
         return calculatedColor;
     }
+
     cityData.forEach(city => {
         //define the tree icon
         const treeIcon = L.icon({
@@ -327,11 +338,14 @@ function addCityMarkers(localCityData) {
     });
 }
 
+
+// Filter top X cities for a given key (Assumes numeric properties)
 function top_cities(city_data, key, top = 10) {
     let sorted_cities = city_data.sort((a, b) => b[key] - a[key]);
     return sorted_cities.slice(0, top);
 };
 
+// Get overall park data 
 function overall_parks_chart(city_data) {
     //console.log(city_data);
     let text_element = d3.select('#section3');
@@ -378,6 +392,7 @@ function overall_parks_chart(city_data) {
     chart.draw();
 };
 
+//Get overall city data
 function overall_cities_chart(city_data) {
     let text_element = d3.select('#section2');
     text_element.text('Overall City Populations');
@@ -415,6 +430,7 @@ function overall_cities_chart(city_data) {
 
 };
 
+// Load city data
 function load_city_data(data) {
     data.forEach((element) => {
         // Assuming City_Name and State_code are properties in each element
@@ -431,7 +447,7 @@ function load_city_data(data) {
     return d3.json('city.list.json');
 }
 
-let cityPolygonList = [];
+// load Polygons
 function loadCityPolygons() {
     d3.json('output.geojson')
         .then(function (data) {
