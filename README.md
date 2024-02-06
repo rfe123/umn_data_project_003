@@ -1,6 +1,8 @@
 # umn_data_project_003
 Team Project for creating a Visualization Dashboard using ETL and Visualization concepts from previous modules
 
+Team - Bob Erickson Cindy Hansel Matt Idle Michelle Clark Nadzeya Slabukha
+
 After identifying reliable datasets, we underwent a data refinement process employing Pandas and the "Data Wrangler" extension within VSCode. Once the data was cleansed and organized, we crafted a Python script. This script was designed to either establish a new SQLite database or connect to an existing one. It then proceeded to ingest data from a CSV file and integrate it into the SQLite database, creating a table where the "id" column was designated as the primary key.
 Originally, our project had plans for an additional "Bonus" element. Unfortunately, due to time constraints, this aspect remained unfinished. Hence, you may notice the existence of a second table labeled "UFO" within the database.
 Subsequently, we developed a Python application utilizing the SQLAlchemy library to facilitate interaction with the SQLite database. To serve various endpoints, we harnessed the Flask micro-framework, which streamlined the handling of HTTP requests and responses.
@@ -9,22 +11,28 @@ Within the HTML file, we refer to a main "logic.js" file, which uses D3 to load 
 
 We took care to utilize publicly available data sets and visualization tools. Our data does not include any identifiable information, instead showing aggregated percentages based on US Census data for demographic details of each city.
 
-Goal ----
-3 Visualizations of Information ----
+## Goal
+
+3 Visualizations of Information 
 - Leaflet Map
 - AnyChart Bar Chart & Column Chart
 - HTML Table
+- Update Charts & Table based on selections made in the Map
   
-New Libraries or Tools
+## New Libraries or Tools
 from pyproj import Proj, transform - used in conversion of geojson epsg:3857 to epsg:4326
 AnyChart.js Visualizations
 VS Code DataWrangler
 
-Additional Future Expansions ----
-Team ----
-Bob Erickson Cindy Hansel Matt Idle Michelle Clark Nadzeya Slabukha
+## Additional Future Expansions
+-	Create more base and overlay layers and exercise layer controls
+-	Automate some of the etl process to lower data size and optimize performance
+-	Put markers into the city areas to show info of particular parks (custom tree icons)
+-	Dynamic Zoom to filter overall city & park displays
+-	Continue to improve the charts - focus the map based on chart city selections
+-	Include UFO sightings in the general area of the parks.
 
-### References
+## References
 
 - ParkServe Park/City Data 
 - OpenWeather City Coordinates (JSON Download)
