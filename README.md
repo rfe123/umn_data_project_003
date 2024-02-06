@@ -40,4 +40,5 @@ VS Code DataWrangler
 - chatgpt - to find resources and code to use for conversions of coordinates
 - import geopandas as gpd - used in conversion of .shp to .geojson boundary coordinates
 - City Boundaries - https://data.cdc.gov/500-Cities-Places/500-Cities-City-Boundaries/n44h-hy2j/about_data
+- https://onlinepngtools.com/create-transparent-png
 
